@@ -10,7 +10,6 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
     const pathname = usePathname();
 
     useEffect(() => {
-        console.log(isAuthenticated)
         if (!isAuthenticated && pathname !== '/login') {
             router.push('/');
         }

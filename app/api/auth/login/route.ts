@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { loginSchema } from '@/lib/validation';
 import { createAccessToken, createRefreshToken } from '@/lib/auth';
-import { setAuthCookies } from '@/lib/cookies';
+import {getRefreshToken, setAuthCookies} from '@/lib/cookies';
 
 const EXTERNAL_LOGIN_URL = process.env.EXTERNAL_AUTH_API!;
 // ⚠️ Временное отключение проверки SSL (только для dev!)
@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 export async function POST(request: NextRequest) {
-    console.log(EXTERNAL_LOGIN_URL);
+
     try {
         const body = await request.json();
         const parsed = loginSchema.safeParse(body);
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
         });
 
         const userData = await externalRes.json();
-        console.log(externalRes);
+
         if (!externalRes.ok) {
             return NextResponse.json(
                 { error: userData.error || 'Ошибка авторизации' },
@@ -51,7 +51,8 @@ export async function POST(request: NextRequest) {
         const refreshToken = createRefreshToken(userId, userEmail);
 
         // Сохраняем refresh token в HTTP-only cookie
-        setAuthCookies(accessToken, refreshToken);
+        await setAuthCookies(accessToken, refreshToken);
+        const d = await getRefreshToken();
 
         // Отправляем клиенту
         return NextResponse.json({

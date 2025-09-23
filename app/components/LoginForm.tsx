@@ -20,6 +20,7 @@ export default function LoginPage() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
+                credentials: 'include',
             });
 
             const data = await res.json();
@@ -30,8 +31,8 @@ export default function LoginPage() {
             }
 
             setUser(data.user, data.accessToken);
-            router.push('/dashboard');
-            router.refresh();
+            // router.push('/dashboard');
+            // router.refresh();
 
         } catch (err) {
             setError('Ошибка сети');
