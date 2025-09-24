@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Unbounded, Manrope } from "next/font/google";
 import "./globals.css";
+import {AuthInitializer} from "@/app/components/AuthInitializer";
 
 const geistSans = Manrope({
   variable: "--font-geist-sans",
@@ -27,6 +28,7 @@ export default function RootLayout({
       <body suppressHydrationWarning={true}
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <AuthInitializer />
         {children}
       </body>
     </html>
