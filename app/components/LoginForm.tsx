@@ -4,17 +4,45 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/authStore';
 
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+
+const FormSchema = z.object({
+    email: z.email(),
+    password: z.string().min(2, {
+        message: "Пароль должен быть больше 4-х символов!",
+    }),
+})
+
 export default function LoginPage() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const router = useRouter();
     const { setUser } = useAuthStore();
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError('');
+    const form = useForm<z.infer<typeof FormSchema>>({
+        resolver: zodResolver(FormSchema),
+        defaultValues: {
+            email: "",
+            password: ''
+        },
+    })
 
+    const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+        const {email, password} = data;
         try {
             const res = await fetch('/api/auth/login', {
                 method: 'POST',
@@ -31,8 +59,8 @@ export default function LoginPage() {
             }
 
             setUser(data.user, data.accessToken);
-            // router.push('/dashboard');
-            // router.refresh();
+            router.push('/dashboard');
+            router.refresh();
 
         } catch (err) {
             setError('Ошибка сети');
@@ -40,30 +68,43 @@ export default function LoginPage() {
     };
 
     return (
-        <div style={{ padding: '40px', maxWidth: '400px', margin: 'auto' }}>
-            <h1>Вход</h1>
+        <div style={{ padding: '40px', maxWidth: '500px', margin: 'auto' }}>
+
             {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
-                />
-                <input
-                    type="password"
-                    placeholder="Пароль"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
-                />
-                <button type="submit" style={{ width: '100%', padding: '10px' }}>
-                    Войти
-                </button>
-            </form>
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6 m-auto">
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Username</FormLabel>
+                                <FormControl>
+                                    <Input {...field} />
+                                </FormControl>
+                                <FormDescription>
+                                    Ваш рабочий Email
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Пароль</FormLabel>
+                                <FormControl>
+                                    <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <Button type="submit">Войти</Button>
+                </form>
+            </Form>
         </div>
     );
 }

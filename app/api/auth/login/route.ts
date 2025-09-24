@@ -55,10 +55,15 @@ export async function POST(request: NextRequest) {
         const d = await getRefreshToken();
 
         // Отправляем клиенту
-        return NextResponse.json({
+        const response =  NextResponse.json({
             user: { id: userId, email: userEmail, name },
             accessToken,
         });
+        response.headers.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+        response.headers.set('Access-Control-Allow-Credentials', 'true');
+        response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+        response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        return response;
     } catch (err) {
         console.error('Login error:', err);
         return NextResponse.json({ error: 'Ошибка сети' }, { status: 500 });

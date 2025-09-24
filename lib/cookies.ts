@@ -1,7 +1,8 @@
 // lib/cookies.ts
 import { cookies } from 'next/headers';
 
-const REFRESH_TOKEN_NAME = '__Secure-refresh-token';
+// const REFRESH_TOKEN_NAME = '__Secure-refresh-token';
+const REFRESH_TOKEN_NAME = 'my-refresh-token';
 
 // Сделаем функцию асинхронной
 export async function setAuthCookies(accessToken: string, refreshToken: string) {
