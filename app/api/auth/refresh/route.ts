@@ -7,7 +7,8 @@ import { getRefreshToken, setAuthCookies } from '@/lib/cookies';
 const EXTERNAL_USER_API = 'https://api.myusers.com/user/profile';
 
 export async function GET(request: NextRequest) {
-    const token = getRefreshToken();
+    const token = await getRefreshToken();
+    console.log('token', token);
     if (!token) {
         return NextResponse.json({ error: 'Требуется рефреш-токен' }, { status: 401 });
     }
@@ -18,13 +19,13 @@ export async function GET(request: NextRequest) {
     }
 
     // (Опционально) Проверим, существует ли пользователь
-    const userCheck = await fetch(`${EXTERNAL_USER_API}/${payload.userId}`, {
-        headers: { 'Authorization': `Bearer ${token}` } // если нужно
-    }).then(r => r.ok ? r.json() : null).catch(() => null);
-
-    if (!userCheck) {
-        return NextResponse.json({ error: 'Пользователь не найден' }, { status: 401 });
-    }
+    // const userCheck = await fetch(`${EXTERNAL_USER_API}/${payload.userId}`, {
+    //     headers: { 'Authorization': `Bearer ${token}` } // если нужно
+    // }).then(r => r.ok ? r.json() : null).catch(() => null);
+    //
+    // if (!userCheck) {
+    //     return NextResponse.json({ error: 'Пользователь не найден' }, { status: 401 });
+    // }
 
     const newAccessToken = createAccessToken(payload.userId, payload.email);
     const newRefreshToken = createRefreshToken(payload.userId, payload.email);

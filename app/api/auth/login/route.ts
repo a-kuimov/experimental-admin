@@ -52,7 +52,6 @@ export async function POST(request: NextRequest) {
 
         // Сохраняем refresh token в HTTP-only cookie
         await setAuthCookies(accessToken, refreshToken);
-        const d = await getRefreshToken();
 
         // Отправляем клиенту
         const response =  NextResponse.json({
@@ -66,6 +65,6 @@ export async function POST(request: NextRequest) {
         return response;
     } catch (err) {
         console.error('Login error:', err);
-        return NextResponse.json({ error: 'Ошибка сети' }, { status: 500 });
+        return NextResponse.json({ error: 'Неверный логин или пароль!' }, { status: 500 });
     }
 }

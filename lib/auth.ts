@@ -1,5 +1,7 @@
 // lib/auth.ts
 import jwt from 'jsonwebtoken';
+import {NextRequest} from "next/server";
+import {ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME} from "@/lib/cookies";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
@@ -24,6 +26,26 @@ export function verifyRefreshToken(token: string): { userId: string; email: stri
     try {
         return jwt.verify(token, JWT_REFRESH_SECRET) as { userId: string; email: string };
     } catch {
+        return null;
+    }
+}
+
+export async function verifyTokenFromCookie(request: NextRequest) {
+    try {
+        // Извлекаем токен из cookies
+        const token = request.cookies.get(REFRESH_TOKEN_NAME)?.value;
+        console.log('token', token);
+        if (!token) {
+            return null;
+        }
+
+        // Проверяем токен (замените на вашу логику верификации)
+        try {
+            return jwt.verify(token, JWT_REFRESH_SECRET) as { userId: string; email: string };
+        } catch {
+            return null;
+        }
+    } catch (error) {
         return null;
     }
 }

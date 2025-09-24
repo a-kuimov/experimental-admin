@@ -53,6 +53,9 @@ importers:
       zustand:
         specifier: ^5.0.8
         version: 5.0.8(@types/react@19.1.13)(react@19.1.0)
+      zustand-devtools:
+        specifier: ^1.1.0
+        version: 1.1.0(typescript@5.9.2)(zustand@5.0.8(@types/react@19.1.13)(react@19.1.0))
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3
@@ -1946,6 +1949,12 @@ packages:
 
   zod@4.1.11:
     resolution: {integrity: sha512-WPsqwxITS2tzx1bzhIKsEs19ABD5vmCVa4xBo2tq/SrV4RNZtfws1EnCWQXM6yh8bD08a1idvkB5MZSBiZsjwg==}
+
+  zustand-devtools@1.1.0:
+    resolution: {integrity: sha512-TfH8jv3M0fa0tFxgq1j+X6qCRE3/Z3W2Woutf82IPwmrMi+3Gytb43hka1tQg8Xm2So0uitJe1lIkikoaqv6JQ==}
+    peerDependencies:
+      typescript: '*'
+      zustand: '*'
 
   zustand@5.0.8:
     resolution: {integrity: sha512-gyPKpIaxY9XcO2vSMrLbiER7QMAMGOQZVRdJ6Zi782jkbzZygq5GI9nG8g+sMgitRtndwaBSl7uiqC49o1SSiw==}
@@ -4030,6 +4039,11 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   zod@4.1.11: {}
+
+  zustand-devtools@1.1.0(typescript@5.9.2)(zustand@5.0.8(@types/react@19.1.13)(react@19.1.0)):
+    dependencies:
+      typescript: 5.9.2
+      zustand: 5.0.8(@types/react@19.1.13)(react@19.1.0)
 
   zustand@5.0.8(@types/react@19.1.13)(react@19.1.0):
     optionalDependencies:

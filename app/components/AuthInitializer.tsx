@@ -9,7 +9,7 @@ export function AuthInitializer() {
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
     useEffect(() => {
-        console.log(isAuthenticated)
+
         restoreSession();
     }, [restoreSession]);
 

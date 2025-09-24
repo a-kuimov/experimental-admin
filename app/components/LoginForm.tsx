@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import Image from 'next/image';
 
 const FormSchema = z.object({
     email: z.email(),
@@ -58,7 +58,7 @@ export default function LoginPage() {
                 return;
             }
 
-            setUser(data.user, data.accessToken);
+            setUser(data.user);
             router.push('/dashboard');
             router.refresh();
 
@@ -68,17 +68,24 @@ export default function LoginPage() {
     };
 
     return (
-        <div style={{ padding: '40px', maxWidth: '500px', margin: 'auto' }}>
+        <div style={{ padding: '40px', maxWidth: '400px', margin: 'auto' }} className="flex flex-col items-center">
 
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+            <Image
+                src="https://unitsys.ru/files/images/new/logo.svg"
+                alt="Логотип"
+                width={200}
+                height={30}
+                className="mb-5"
+            />
+            <h1 className="text-2xl font-bold text-center mb-10">Вход в админ-панель</h1>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6 m-auto">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full mb-3">
                     <FormField
                         control={form.control}
                         name="email"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Username</FormLabel>
+                                <FormLabel>Логин</FormLabel>
                                 <FormControl>
                                     <Input {...field} />
                                 </FormControl>
@@ -96,15 +103,16 @@ export default function LoginPage() {
                             <FormItem>
                                 <FormLabel>Пароль</FormLabel>
                                 <FormControl>
-                                    <Input {...field} />
+                                    <Input {...field} type='password'/>
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
-                    <Button type="submit">Войти</Button>
+                    <Button type="submit" className="w-full">Войти</Button>
                 </form>
             </Form>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
     );
 }

@@ -1,7 +1,6 @@
 // lib/authStore.ts
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { useRouter } from 'next/navigation';
 
 interface User {
     id: number;
@@ -11,62 +10,108 @@ interface User {
 
 interface AuthState {
     user: User | null;
-    accessToken: string | null;
     isAuthenticated: boolean;
+    isLoading: boolean;
 
-    setUser: (user: User, token: string) => void;
-    updateToken: (token: string) => void;
+    setUser: (user: User) => void;
     logout: () => void;
-    // Добавим метод для проверки сессии
-    restoreSession: () => Promise<void>;
+    checkSession: () => Promise<boolean>;
+    initializeAuth: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
     persist(
         (set, get) => ({
             user: null,
-            accessToken: null,
             isAuthenticated: false,
+            isLoading: true,
 
-            setUser: (user, token) =>
-                set({ user, accessToken: token, isAuthenticated: true }),
+            setUser: (user) =>
+                set({ user, isAuthenticated: true, isLoading: false }),
 
-            updateToken: (token) =>
-                set({ accessToken: token }),
+            logout: async () => {
+                try {
+                    await fetch('/api/auth/logout', {
+                        method: 'POST',
+                        credentials: 'include' // Важно: отправляем cookies
+                    });
+                } catch (err) {
+                    console.error('Logout failed', err);
+                } finally {
+                    set({ user: null, isAuthenticated: false, isLoading: false });
+                }
+            },
 
-            logout: () => {
-                fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-                set({ user: null, accessToken: null, isAuthenticated: false });
+            // Проверка сессии через cookies (без передачи токена в headers)
+            checkSession: async (): Promise<boolean> => {
+                try {
+                    const res = await fetch('/api/auth/me', {
+                        method: 'GET',
+                        credentials: 'include', // Отправляем cookies автоматически
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
+
+                    if (res.ok) {
+                        console.log('yes')
+                        const userData = await res.json();
+                        set({ user: userData, isAuthenticated: true });
+                        return true;
+                    }
+                    return false;
+                } catch (error) {
+                    console.error('Session check failed:', error);
+                    return false;
+                }
+            },
+
+            // Инициализация с проверкой сессии через cookies
+            initializeAuth: async () => {
+                const { checkSession, logout } = get();
+
+                // Всегда проверяем сессию через cookies, независимо от состояния в localStorage
+                const isValid = await checkSession();
+
+                if (!isValid) {
+                    // Сессия недействительна - очищаем localStorage
+                    set({ user: null, isAuthenticated: false, isLoading: false });
+                } else {
+                    set({ isLoading: false });
+                }
             },
 
             restoreSession: async () => {
-                console.log('start');
-                console.log(get().isAuthenticated);
-                if (get().isAuthenticated) return; // Уже авторизован
-                console.log('restore session');
                 try {
-                    // Отправляем запрос к серверу, он проверит куку и выдаст новый accessToken
                     const res = await fetch('/api/auth/refresh', {
                         method: 'GET',
-                        credentials: 'include', // ← обязателен!
+                        credentials: 'include', // Cookies отправляются автоматически
                     });
 
                     if (res.ok) {
                         const data = await res.json();
                         set({
                             user: data.user,
-                            accessToken: data.accessToken,
                             isAuthenticated: true,
+                            isLoading: false,
                         });
+                    } else {
+                        set({ user: null, isAuthenticated: false, isLoading: false });
                     }
                 } catch (err) {
                     console.error('Failed to restore session', err);
-                    set({ user: null, accessToken: null, isAuthenticated: false });
+                    set({ user: null, isAuthenticated: false, isLoading: false });
                 }
             },
         }),
         {
             name: 'auth-storage',
+            onRehydrateStorage: () => async (state) => {
+                if (state) {
+                    // После гидратации проверяем сессию через cookies
+                    await state.initializeAuth();
+                }
+            },
         }
     )
 );
