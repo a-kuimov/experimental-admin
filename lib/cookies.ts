@@ -13,8 +13,7 @@ export async function setAuthCookies(accessToken: string, refreshToken: string) 
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         path: '/', // или '/' — зависит от структуры API
-        // maxAge: 60 * 60 * 24 * 7, // 7 дней
-        maxAge: 60, // 7 дней
+        maxAge: 60 * 60 * 24 * 7, // 7 дней
     });
 }
 
