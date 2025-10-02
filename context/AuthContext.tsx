@@ -31,6 +31,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         checkAuth();
     }, [checkAuth]);
 
+    useEffect(() => {
+        if (isLoading || isLoading === undefined) return;
+        if (!user) {
+            router.push('/login');
+        }
+    }, [user, isLoading]);
 
     return <AuthContext.Provider value={{
         user,
