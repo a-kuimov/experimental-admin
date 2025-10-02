@@ -1,8 +1,6 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/lib/authStore';
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -20,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Image from 'next/image';
+import {useAuth} from "@/context/AuthContext";
 
 const FormSchema = z.object({
     email: z.email(),
@@ -29,9 +28,8 @@ const FormSchema = z.object({
 })
 
 export default function LoginPage() {
-    const [error, setError] = useState('');
     const router = useRouter();
-    const { setUser } = useAuthStore();
+    const { login, register, error, isLoading } = useAuth();
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -44,26 +42,15 @@ export default function LoginPage() {
     const onSubmit = async (data: z.infer<typeof FormSchema>) => {
         const {email, password} = data;
         try {
-            const res = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-                credentials: 'include',
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                setError(data.error || 'Ошибка входа');
-                return;
-            }
-
-            setUser(data.user);
+            await login(email, password);
+            // if (isLogin) {
+            //     await login(email, password);
+            // } else {
+            //     await register(email, password);
+            // }
             router.push('/dashboard');
-            router.refresh();
-
         } catch (err) {
-            setError('Ошибка сети');
+            console.log('Ошибка сети');
         }
     };
 
@@ -109,7 +96,9 @@ export default function LoginPage() {
                             </FormItem>
                         )}
                     />
-                    <Button type="submit" className="w-full">Войти</Button>
+                    <Button type="submit" className="w-full">
+                        {isLoading ? 'Loading...' : 'Войти'}
+                    </Button>
                 </form>
             </Form>
             {error && <p style={{ color: 'red' }}>{error}</p>}
