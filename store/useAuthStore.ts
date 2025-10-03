@@ -24,7 +24,7 @@ export const useAuthStore = create<AuthState>()(
         (set, get) => ({
             user: null,
             accessToken: null,
-            isLoading: false,
+            isLoading: true,
             error: null,
 
             login: async (email, password) => {
@@ -75,14 +75,23 @@ export const useAuthStore = create<AuthState>()(
                     credentials: 'include',
                 });
 
-                if (!res.ok) throw new Error('Token refresh failed');
+                if (!res.ok) {
+                    set({isLoading: false})
+                    throw new Error('Token refresh failed')
+                };
 
                 const data = await res.json();
                 set({ accessToken: data.accessToken, user: data.user });
             },
 
             checkAuth: async () => {
-                if (!get().accessToken) return;
+                set({isLoading: true})
+                console.log(get().accessToken)
+                if (!get().accessToken) {
+                    console.log('no')
+                    set({isLoading: false})
+                    return;
+                };
 
                 const res = await fetch('http://localhost:3001/auth/profile', {
                     method: 'GET',
@@ -92,12 +101,12 @@ export const useAuthStore = create<AuthState>()(
 
                 if (res.ok) {
                     const user = await res.json();
-                    set({ user });
+                    set({ user, isLoading: false });
                 } else {
                     try {
                         await get().refreshTokens();
                     } catch {
-                        set({ user: null, accessToken: null });
+                        set({ user: null, accessToken: null, isLoading: false });
                     }
                 }
             },

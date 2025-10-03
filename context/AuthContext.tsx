@@ -21,7 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         register,
         logout,
-        isLoading,
+        isLoading: storeIsLoading,
         error,
         checkAuth,
     } = useAuthStore();
@@ -31,19 +31,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         checkAuth();
     }, [checkAuth]);
 
-    useEffect(() => {
-        if (isLoading || isLoading === undefined) return;
-        if (!user) {
-            router.push('/login');
-        }
-    }, [user, isLoading]);
+    // Пока идёт проверка, не рендерим детей
+    if (storeIsLoading) {
+        return <div>Loading...</div>;
+    }
 
     return <AuthContext.Provider value={{
         user,
         login,
         register,
         logout,
-        isLoading,
+        isLoading: storeIsLoading,
         error,
     }}>{children}</AuthContext.Provider>;
 }
