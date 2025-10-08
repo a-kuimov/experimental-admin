@@ -9,8 +9,7 @@ const TerminalHardwareTable = () => {
     return (
         <div className="overflow-hidden rounded-md border">
             <Table>
-                <TableCaption>A list of your recent invoices.</TableCaption>
-                <TableHeader>
+                <TableHeader className="bg-muted">
                     <TableRow>
                         <TableHead className="w-[20px]"></TableHead>
                         <TableHead>Название</TableHead>
