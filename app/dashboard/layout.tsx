@@ -1,7 +1,7 @@
 'use client';
 
 import {SidebarInset, SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
-import {AppSidebar} from "@/components/ui/my-components/app-sidebar";
+import {AppSidebar} from "@/components/my-components/dashboard/app-sidebar";
 
 
 import { useRouter } from 'next/navigation';

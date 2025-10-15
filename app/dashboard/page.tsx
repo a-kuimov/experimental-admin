@@ -1,11 +1,11 @@
 'use client';
 
-import {MultiSelect, Option} from "@/components/ui/my-components/multi-select";
+import {MultiSelect, Option} from "@/components/my-components/multi-select";
 import {useState} from "react";
 import {SidebarTrigger} from "@/components/ui/sidebar";
 import {Separator} from "@/components/ui/separator";
 import {useAuth} from "@/context/AuthContext";
-import TerminalHardwareTable from "@/components/ui/my-components/terminal-hardware-table";
+import TerminalHardwareTable from "@/components/my-components/dashboard/terminals/terminal-hardware-table";
 import {Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import {ChevronDown, RussianRuble, Trash2, X} from "lucide-react";
 import {InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput} from "@/components/ui/input-group";
@@ -20,8 +20,17 @@ import {PopoverContent} from "@/components/ui/popover";
 import {Button} from "@/components/ui/button";
 import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious} from "@/components/ui/carousel";
 import {ScrollArea, ScrollBar} from "@/components/ui/scroll-area";
-import {ExtraImages} from "@/components/ui/my-components/extra-images";
-import TinyMCEEditor from "@/components/ui/my-components/tinymce-editor";
+import {ExtraImages} from "@/components/my-components/dashboard/terminals/extra-images";
+import TinyMCEEditor from "@/components/my-components/tinymce-editor";
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList, BreadcrumbPage,
+    BreadcrumbSeparator
+} from "@/components/ui/breadcrumb";
+import DashboardHeader from "@/components/my-components/dashboard/dashboard-header";
+import ArticleForm from "@/components/my-components/dashboard/terminals/article-form";
 const OPTIONS = [
     { value: 'nextjs', label: 'Next.js' },
     { value: 'react', label: 'React' },
@@ -75,47 +84,28 @@ const Page = () =>{
     const [content, setContent] = useState('<p>Начните писать здесь...</p>');
 
     // @ts-ignore
-    return (<> <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-        <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator
-                orientation="vertical"
-                className="mr-2 data-[orientation=vertical]:h-4"
-            />
-            {/*<Breadcrumb>*/}
-            {/*    <BreadcrumbList>*/}
-            {/*        <BreadcrumbItem className="hidden md:block">*/}
-            {/*            <BreadcrumbLink href="#">*/}
-            {/*                Building Your Application*/}
-            {/*            </BreadcrumbLink>*/}
-            {/*        </BreadcrumbItem>*/}
-            {/*        <BreadcrumbSeparator className="hidden md:block" />*/}
-            {/*        <BreadcrumbItem>*/}
-            {/*            <BreadcrumbPage>Data Fetching</BreadcrumbPage>*/}
-            {/*        </BreadcrumbItem>*/}
-            {/*    </BreadcrumbList>*/}
-            {/*</Breadcrumb>*/}
-        </div>
-    </header>
-        <div className="flex flex-1 flex-col px-4">
-            <div className="@container/main flex flex-row gap-3">
-                <div className="flex flex-col items-center w-30 gap-3">
-                    <ExtraImages works={works} />
+    return (<><DashboardHeader items={[{text: "Главная", href: "/dashboard"}, {text: "Терминалы"}]}/>
+        <div className="flex flex-1 flex-col px-4 mt-10">
+            <div className="@container/main flex flex-row gap-4">
+                <div className="flex gap-3" >
+                    <div className="flex flex-col items-center w-30 gap-3">
+                        <ExtraImages works={works} />
+                    </div>
+                    <div className="flex flex-col items-center w-100 ">
+                        <Card className="rounded-sm w-full flex-1 bg-[url(https://unitsys.ru/upload/images/12234567.png)] bg-no-repeat bg-center bg-cover relative">
+                            <Button variant="destructive" size="icon-sm" className="absolute right-3 top-3 rounded-full p-0"><X size={10} /></Button>
+                        </Card>
+                    </div>
                 </div>
-                <div className="flex flex-col items-center w-100 ">
-                    <Card className="rounded-sm w-full flex-1 bg-[url(https://unitsys.ru/upload/images/12234567.png)] bg-no-repeat bg-center bg-cover relative">
-                        <Button variant="destructive" size="icon-sm" className="absolute right-3 top-3 rounded-full p-0"><X size={10} /></Button>
-                    </Card>
-                </div>
-                <div className="flex flex-col gap-3">
-                    {/*Вот здесь будет форма, которая сохраняет данные статьи (Главная кнопка "Сохранить")*/}
-                    <h1 className="scroll-m-20 text-2xl font-bold tracking-tight text-balance">UTS Fly W 55/65/75</h1>
 
+                <div className="flex flex-col gap-3 flex-1">
+                    <ArticleForm />
                 </div>
 
             </div>
-            <div className="@container/main flex flex-1 flex-row gap-3">
+            <div className="@container/main flex flex-1 flex-row gap-4">
                 <div className="flex flex-col flex-1 gap-4 py-4 md:gap-6 md:py-6">
+                    <TerminalHardwareTable />
                     <TerminalHardwareTable />
                 </div>
                 <div className="w-full max-w-[450px] py-4 md:gap-6 md:py-6">

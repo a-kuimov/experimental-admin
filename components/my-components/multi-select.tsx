@@ -6,9 +6,9 @@ import { Command as CommandPrimitive } from 'cmdk';
 import {Check, ChevronDown, X} from 'lucide-react';
 
 import { cn } from '@/lib/utils';
-import { Badge } from '../badge';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '../command';
-import { Popover, PopoverContent, PopoverTrigger } from '../popover';
+import { Badge } from '../ui/badge';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '../ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 
 export interface Option {
     value: string;
@@ -23,26 +23,32 @@ interface MultiSelectProps {
     disabled?: boolean;
 }
 
+// components/ui/multi-select.tsx
 export function MultiSelect({
-        options,
-        selected,
-        onChange,
-        placeholder = 'Выберите опции...',
-        disabled = false,
-    }: MultiSelectProps) {
+                                options,
+                                selected,
+                                onChange,
+                                placeholder = 'Выберите опции...',
+                                disabled = false,
+                            }: MultiSelectProps) {
     const [open, setOpen] = useState(false);
 
+    // Гарантируем, что selected — массив
+    const selectedArray = Array.isArray(selected) ? selected : [];
+
     const handleUnselect = (option: Option) => {
-        onChange(selected.filter((s) => s.value !== option.value));
+        onChange(selectedArray.filter((s) => s.value !== option.value));
     };
 
     const handleSelect = (option: Option) => {
-        if (selected.some((s) => s.value === option.value)) {
+        if (selectedArray.some((s) => s.value === option.value)) {
             handleUnselect(option);
         } else {
-            onChange([...selected, option]);
+            onChange([...selectedArray, option]);
         }
     };
+
+    // ...
 
     return (
         <Popover open={open} onOpenChange={setOpen} modal={true}>
@@ -54,8 +60,8 @@ export function MultiSelect({
                     )}
                 >
                     <div className="flex flex-wrap gap-1 flex-1">
-                        {selected.length > 0 ? (
-                            selected.map((option) => (
+                        {selectedArray.length > 0 ? (
+                            selectedArray.map((option) => (
                                 <Badge
                                     key={option.value}
                                     variant="secondary"
@@ -86,7 +92,7 @@ export function MultiSelect({
                     <CommandEmpty>Не найдено.</CommandEmpty>
                     <CommandGroup className="max-h-64 overflow-auto">
                         {options.map((option) => {
-                            const isSelected = selected.some((s) => s.value === option.value);
+                            const isSelected = selectedArray.some((s) => s.value === option.value);
                             return (
                                 <CommandItem
                                     key={option.value}

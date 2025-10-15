@@ -1,5 +1,5 @@
 import {GripVertical, Trash2} from "lucide-react";
-import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow} from "../table";
+import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow} from "../../../ui/table";
 import {Input} from "@/components/ui/input";
 import {Checkbox} from "@/components/ui/checkbox";
 import {Button} from "@/components/ui/button";
