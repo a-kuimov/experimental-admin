@@ -31,6 +31,14 @@ import {
 } from "@/components/ui/breadcrumb";
 import DashboardHeader from "@/components/my-components/dashboard/dashboard-header";
 import ArticleForm from "@/components/my-components/dashboard/terminals/article-form";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
+} from "@/components/ui/dialog";
 const OPTIONS = [
     { value: 'nextjs', label: 'Next.js' },
     { value: 'react', label: 'React' },
@@ -85,16 +93,28 @@ const Page = () =>{
 
     // @ts-ignore
     return (<><DashboardHeader items={[{text: "Главная", href: "/dashboard"}, {text: "Терминалы"}]}/>
-        <div className="flex flex-1 flex-col px-4 mt-10">
+        <div className="flex flex-1 flex-col px-4 mt-10 gap-6">
             <div className="@container/main flex flex-row gap-4">
                 <div className="flex gap-3" >
                     <div className="flex flex-col items-center w-30 gap-3">
                         <ExtraImages works={works} />
                     </div>
-                    <div className="flex flex-col items-center w-100 ">
+                    <div className="flex flex-col items-center w-100 gap-3">
                         <Card className="rounded-sm w-full flex-1 bg-[url(https://unitsys.ru/upload/images/12234567.png)] bg-no-repeat bg-center bg-cover relative">
                             <Button variant="destructive" size="icon-sm" className="absolute right-3 top-3 rounded-full p-0"><X size={10} /></Button>
                         </Card>
+                        <Dialog>
+                            <DialogTrigger asChild><Button type="button" variant="secondary">Карточка терминала</Button></DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Are you absolutely sure?</DialogTitle>
+                                    <DialogDescription>
+                                        This action cannot be undone. This will permanently delete your account
+                                        and remove your data from our servers.
+                                    </DialogDescription>
+                                </DialogHeader>
+                            </DialogContent>
+                        </Dialog>
                     </div>
                 </div>
 
