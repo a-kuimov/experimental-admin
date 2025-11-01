@@ -1,7 +1,10 @@
+
 import type { Metadata } from "next";
 import { Unbounded, Manrope } from "next/font/google";
 import "./globals.css";
 import {AuthProvider} from "@/context/AuthContext";
+import { Toaster } from "@/components/ui/sonner";
+import {useTheme} from "next-themes";
 
 const geistSans = Manrope({
   variable: "--font-geist-sans",
@@ -23,13 +26,29 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
+    return (
     <html lang="en">
       <body suppressHydrationWarning={true}
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
           <AuthProvider>
             {children}
+              <Toaster // или "light" / "dark"
+                  toastOptions={{
+                      classNames: {
+                          // Кастомные классы для разных частей уведомления
+                          toast: "border", // общий класс для всех тостов
+                          title: "text-sm font-normal", // общий класс для заголовка
+                          description: "text-xs opacity-90", // общий класс для описания
+                          actionButton: "bg-zinc-900 text-white hover:bg-zinc-700",
+                          cancelButton: "bg-zinc-100 text-zinc-900 hover:bg-zinc-200",
+                          success: "bg-green-100! border-green-200! text-green-800!", // success тост
+                          error: "bg-red-100! border-red-200! text-red-800!", // error тост
+                          warning: "bg-yellow-100! border-yellow-200! text-yellow-800!",
+                          info: "bg-blue-100! border-blue-200! text-blue-800!",
+                      },
+                }}
+              />
           </AuthProvider>
       </body>
     </html>

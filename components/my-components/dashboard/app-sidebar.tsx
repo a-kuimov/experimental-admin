@@ -1,13 +1,26 @@
+'use client'
+
 import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
-    SidebarGroup,
-    SidebarHeader,
+    SidebarGroup, SidebarGroupContent,
+    SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import Image from "next/image";
+import {MonitorSpeaker} from "lucide-react";
+import {usePathname} from "next/navigation";
 
+const items = [
+    {
+        title: "Терминалы",
+        url: 'dashboard/terminals',
+        icon: <MonitorSpeaker />,
+    }
+];
 export function AppSidebar() {
+    const pathname = usePathname();
+    console.log(pathname)
     return (
         <Sidebar>
             <SidebarHeader className='items-center justify-center h-16'>
@@ -19,8 +32,20 @@ export function AppSidebar() {
                 />
             </SidebarHeader>
             <SidebarContent>
-                <SidebarGroup />
-                <SidebarGroup />
+                <SidebarGroup>
+                    <SidebarGroupContent className="flex flex-col gap-2">
+                        <SidebarMenu>
+                            {items.map((item) => (
+                                <SidebarMenuItem key={item.title}>
+                                    <SidebarMenuButton tooltip={item.title} isActive={item.url === pathname.split('/').filter(Boolean).pop()}>
+                                        {item.icon && item.icon}
+                                        <a href={item.url}>{item.title}</a>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            ))}
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
             </SidebarContent>
             <SidebarFooter />
         </Sidebar>

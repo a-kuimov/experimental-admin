@@ -22,7 +22,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     if (isLoading) return <div>Loading...</div>;
     return (
         <SidebarProvider>
-            <AppSidebar />
+            <AppSidebar router={router}/>
             <SidebarInset>
                 {children}
             </SidebarInset>

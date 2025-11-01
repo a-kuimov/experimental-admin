@@ -7,6 +7,7 @@ import {
     BreadcrumbList, BreadcrumbPage,
     BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
+import React from "react";
 
 export interface BreadcrumbItem {
     text: string;
@@ -26,24 +27,24 @@ const DashboardHeader = ({items}: BreadcrumbItems) => {
                     orientation="vertical"
                     className="mr-2 data-[orientation=vertical]:h-4"
                 />
-                {/*<Breadcrumb>*/}
-                {/*    <BreadcrumbList>*/}
-                {/*        {items.map((item, index) => (*/}
-                {/*            <>*/}
-                {/*            <BreadcrumbItem  className={index !== items.length - 1 ? "hidden md:block" : ''}>*/}
-                {/*                {index !== items.length - 1 ?*/}
-                {/*                    (<BreadcrumbLink href={item.href}>*/}
-                {/*                        {item.text}*/}
-                {/*                    </BreadcrumbLink>) :*/}
-                {/*                    (<BreadcrumbPage>{item.text}</BreadcrumbPage>)*/}
-                {/*                }*/}
-                {/*            </BreadcrumbItem>*/}
-                {/*            {index !== items.length - 1 &&  <BreadcrumbSeparator className="hidden md:block" />}*/}
-                {/*            </>*/}
-                {/*        ))}*/}
+                <Breadcrumb>
+                    <BreadcrumbList>
+                        {items.map((item, index) => (
+                            <React.Fragment key={index}>
+                            <BreadcrumbItem  className={index !== items.length - 1 ? "hidden md:block" : ''}>
+                                {index !== items.length - 1 ?
+                                    (<BreadcrumbLink href={item.href}>
+                                        {item.text}
+                                    </BreadcrumbLink>) :
+                                    (<BreadcrumbPage>{item.text}</BreadcrumbPage>)
+                                }
+                            </BreadcrumbItem>
+                            {index !== items.length - 1 &&  <BreadcrumbSeparator className="hidden md:block" />}
+                            </React.Fragment>
+                        ))}
 
-                {/*    </BreadcrumbList>*/}
-                {/*</Breadcrumb>*/}
+                    </BreadcrumbList>
+                </Breadcrumb>
             </div>
         </header>
     );
